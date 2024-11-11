@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NEZWalksAPI.Data;
 using NEZWalksAPI.Models.Domain;
 using NEZWalksAPI.Models.DTO;
+using NEZWalksAPI.Repositories;
 
 namespace NEZWalksAPI.Controllers
 {
@@ -13,17 +14,19 @@ namespace NEZWalksAPI.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
+        private readonly IRegionRepository regionRepository;
 
-        public RegionsController(NZWalksDbContext dbContext)
+        public RegionsController(NZWalksDbContext dbContext,IRegionRepository regionRepository)
         {
             this.dbContext = dbContext;
+            this.regionRepository = regionRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             //Get Data from database - Domain models
 
-            var regionsDomain =await dbContext.Regions.ToListAsync(); //By adding the additional await and changing the ToList to async the program becomes Async
+            var regionsDomain =await regionRepository.GetAllAsync();
 
             //Mpa Domain Models to DTOs
             var regionsDto = new List<RegionDto>();
