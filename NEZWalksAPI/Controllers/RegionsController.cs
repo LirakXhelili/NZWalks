@@ -93,5 +93,34 @@ namespace NEZWalksAPI.Controllers
             return CreatedAtAction(nameof(GetById), new {id = regionDto.Id},regionDto);
 
         }
+
+        //Update region
+        [HttpPut]
+        [Route("{id:Guid}")]
+
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        {
+            var regionDomainModel = dbContext.Regions.FirstOrDefault(x=> x.Id == id);
+            if(regionDomainModel == null)
+            {
+                return NotFound();
+            }
+            //Map Dto to domain model
+            regionDomainModel.Code = updateRegionRequestDto.Code;
+            regionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
+            regionDomainModel.Name = updateRegionRequestDto.Name;
+
+            dbContext.SaveChanges();
+
+            //Convert Domain model to Dto
+            var regionDto = new RegionDto
+            {
+                Id = regionDomainModel.Id,
+                Code = regionDomainModel.Code,
+                Name = regionDomainModel.Name,
+                RegionImageUrl = regionDomainModel.RegionImageUrl
+            };
+            return Ok(regionDto);
+        }
     }
 }
