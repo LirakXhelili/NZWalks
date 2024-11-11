@@ -75,7 +75,6 @@ namespace NEZWalksAPI.Migrations
 
                     b.Property<double>("LengthInKm")
                         .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

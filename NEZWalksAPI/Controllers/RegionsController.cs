@@ -111,7 +111,6 @@ namespace NEZWalksAPI.Controllers
             regionDomainModel.Name = updateRegionRequestDto.Name;
 
             dbContext.SaveChanges();
-
             //Convert Domain model to Dto
             var regionDto = new RegionDto
             {

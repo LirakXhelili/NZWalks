@@ -6,6 +6,7 @@ namespace NEZWalksAPI.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
+
     public class StudentsController : ControllerBase
     {
         //GET:https//localhost:portnumber/api/students
