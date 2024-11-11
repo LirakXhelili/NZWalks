@@ -12,6 +12,7 @@ namespace NEZWalksAPI.Controllers
         [HttpGet]
         public IActionResult GetAllStudents()
         {
+
             string[] studentNames = new string[] { "Lirak", "Lorik", "Malsore", "Olt" };
 
             return Ok(studentNames);

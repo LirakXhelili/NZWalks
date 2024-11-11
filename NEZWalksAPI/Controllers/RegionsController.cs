@@ -39,7 +39,6 @@ namespace NEZWalksAPI.Controllers
             }
 
             //Return DTO (never return Domain Models)
-
             return Ok(regionsDto);
         }
 

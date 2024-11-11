@@ -11,7 +11,6 @@
 
         public Guid RegionId { get; set; }
 
-
         //Navugatuib properties
 
         public Difficulty Difficulty { get; set; }

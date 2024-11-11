@@ -20,6 +20,7 @@ namespace NEZWalksAPI.Migrations
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
+
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("NEZWalksAPI.Models.Domain.Difficulty", b =>
