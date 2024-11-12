@@ -33,5 +33,16 @@ namespace NEZWalksAPI.Controllers
             return Ok(mapper.Map<WalkDto>(walkDomainModel));
 
         }
+
+        //Get Walk
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var walksDomainModel = await walkRepository.GetAllAsync();
+            //Map domain model to dto
+            return Ok(mapper.Map<List<WalkDto>>(walksDomainModel));
+        }
+
     }
 }

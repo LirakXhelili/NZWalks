@@ -19,5 +19,11 @@ namespace NEZWalksAPI.Repositories
             return walk;
 
         }
+
+        public async Task<List<Walk>> GetAllAsync()
+        {
+            return await dbContext.Walk.ToListAsync();
+
+        }
     }
 }
