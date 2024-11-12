@@ -13,6 +13,8 @@ namespace NEZWalksAPI.Mappings
             CreateMap<UpdateRegionRequestDto, Region>().ReverseMap();
             CreateMap<AddWalksRequestDto, Walk>().ReverseMap();
             CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<Difficulty,DifficultyDto>().ReverseMap(); 
         }
     }
 }   
+    
