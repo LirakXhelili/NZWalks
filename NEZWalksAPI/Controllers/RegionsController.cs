@@ -51,7 +51,7 @@ namespace NEZWalksAPI.Controllers
         {
             //var region = dbContext.Regions.Find(id);
             //Get region Domain model form Database
-            var regionDomain = await dbContext.Regions.FirstOrDefaultAsync(x=>x.Id==id);
+            var regionDomain = await regionRepository.GetByIdAsync(id);
             if (regionDomain == null)
             {
                 return NotFound();
@@ -81,8 +81,7 @@ namespace NEZWalksAPI.Controllers
                 RegionImageUrl = addRegionRequestDto.RegionImageUrl
             };
             //Use domain model to create region
-            await dbContext.Regions.AddAsync(regionDomainModel);
-            await dbContext.SaveChangesAsync();
+            regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
             //Map domain model back to DTO
             var regionDto = new RegionDto
@@ -103,17 +102,19 @@ namespace NEZWalksAPI.Controllers
 
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x=> x.Id == id);
+            //Map DTO to domain model
+            var regionDomainModel = new Region
+            {
+                Code = updateRegionRequestDto.Code,
+                Name = updateRegionRequestDto.Name,
+                RegionImageUrl = updateRegionRequestDto.RegionImageUrl
+            };
+            regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
             if(regionDomainModel == null)
             {
                 return NotFound();
-            }
-            //Map Dto to domain model
-            regionDomainModel.Code = updateRegionRequestDto.Code;
-            regionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
-            regionDomainModel.Name = updateRegionRequestDto.Name;
-
-            await dbContext.SaveChangesAsync();
+            };
+            
             //Convert Domain model to Dto
             var regionDto = new RegionDto
             {
@@ -132,15 +133,11 @@ namespace NEZWalksAPI.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+           var regionDomainModel = await regionRepository.DeleteAsync(id);
             if (regionDomainModel == null)
             {
                 return NotFound();
             }
-            //Delete region
-            dbContext.Regions.Remove(regionDomainModel);
-            await dbContext.SaveChangesAsync();
-
             //Optional: return deleted region me mapping
             //Permes dto
             var regionDto = new RegionDto
