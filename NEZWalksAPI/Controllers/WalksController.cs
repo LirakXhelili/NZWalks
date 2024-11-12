@@ -57,5 +57,21 @@ namespace NEZWalksAPI.Controllers
             return Ok(mapper.Map<WalkDto>(walkDomainModel));
         }
 
+        //Update Walk
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkRequestDto updateWalkRequestDto)
+        {
+            //Map to dto to domain model
+            var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
+
+            walkDomainModel = await walkRepository.UpdateAsync(id,walkDomainModel);
+
+            if(walkDomainModel == null) { return NotFound(); }
+
+            //Map domainModel into dto
+            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+        }
+
     }
 }
