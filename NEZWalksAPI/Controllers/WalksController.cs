@@ -23,14 +23,22 @@ namespace NEZWalksAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddWalksRequestDto addWalkRequestDto)
         {
-            //Map DTO to Domain model
-            var walkDomainModel = mapper.Map<Walk>(addWalkRequestDto);
+            if (ModelState.IsValid)
+            {
+                //Map DTO to Domain model
+                var walkDomainModel = mapper.Map<Walk>(addWalkRequestDto);
 
-            await walkRepository.CreateAsync(walkDomainModel);
+                await walkRepository.CreateAsync(walkDomainModel);
 
-            //Map domain model to DTO
+                //Map domain model to DTO
 
-            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+                return Ok(mapper.Map<WalkDto>(walkDomainModel));
+            }
+            else
+            {
+                return BadRequest(ModalState);
+            }
+           
 
         }
 
@@ -62,15 +70,20 @@ namespace NEZWalksAPI.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkRequestDto updateWalkRequestDto)
         {
-            //Map to dto to domain model
-            var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
+            if (ModelState.IsValid)
+            {
+                //Map to dto to domain model
+                var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
 
-            walkDomainModel = await walkRepository.UpdateAsync(id,walkDomainModel);
+                walkDomainModel = await walkRepository.UpdateAsync(id, walkDomainModel);
 
-            if(walkDomainModel == null) { return NotFound(); }
+                if (walkDomainModel == null) { return NotFound(); }
 
-            //Map domainModel into dto
-            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+                //Map domainModel into dto
+                return Ok(mapper.Map<WalkDto>(walkDomainModel));
+            }
+            return BadRequest(ModelState);
+            
         }
         
         //Delete Walk
