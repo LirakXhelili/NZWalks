@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NEZWalksAPI.Data;
@@ -15,11 +16,13 @@ namespace NEZWalksAPI.Controllers
     {
         private readonly NZWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
+        private readonly IMapper mapper;
 
-        public RegionsController(NZWalksDbContext dbContext,IRegionRepository regionRepository)
+        public RegionsController(NZWalksDbContext dbContext,IRegionRepository regionRepository,IMapper mapper)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
+            this.mapper = mapper;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -28,21 +31,10 @@ namespace NEZWalksAPI.Controllers
 
             var regionsDomain =await regionRepository.GetAllAsync();
 
-            //Mpa Domain Models to DTOs
-            var regionsDto = new List<RegionDto>();
-            foreach (var regionDomain in regionsDomain)
-            {
-                regionsDto.Add(new RegionDto()
-                {
-                    Id = regionDomain.Id,
-                    Name = regionDomain.Name,
-                    Code = regionDomain.Code,
-                    RegionImageUrl = regionDomain.RegionImageUrl
-                });
-            }
-
+            //Mpa Domain Models to 
+            //var regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
             //Return DTO (never return Domain Models)
-            return Ok(regionsDto);
+            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
         }
 
         [HttpGet]
@@ -58,15 +50,8 @@ namespace NEZWalksAPI.Controllers
             }
 
             //Map or convert Domain Modal to DTO
-            var regionsDto = new RegionDto
-            {
-
-                Id = regionDomain.Id,
-                Name = regionDomain.Name,
-                Code = regionDomain.Code,
-                RegionImageUrl = regionDomain.RegionImageUrl
-            };
-            return Ok(regionsDto);
+            
+            return Ok(mapper.Map<RegionDto>(regionDomain));
         }
 
         //POST To create new Region 
@@ -74,23 +59,12 @@ namespace NEZWalksAPI.Controllers
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             //Map DTO to Domain Model
-            var regionDomainModel = new Region
-            {
-                Code = addRegionRequestDto.Code,
-                Name = addRegionRequestDto.Name,
-                RegionImageUrl = addRegionRequestDto.RegionImageUrl
-            };
+            var regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
             //Use domain model to create region
             regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
             //Map domain model back to DTO
-            var regionDto = new RegionDto
-            {
-                Id = regionDomainModel.Id,
-                Code = regionDomainModel.Code,
-                Name = regionDomainModel.Name,
-                RegionImageUrl = regionDomainModel.RegionImageUrl
-            };
+            var regionDto = mapper.Map<RegionDto>(regionDomainModel);
 
             return CreatedAtAction(nameof(GetById), new {id = regionDto.Id},regionDto);
 
@@ -103,27 +77,15 @@ namespace NEZWalksAPI.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             //Map DTO to domain model
-            var regionDomainModel = new Region
-            {
-                Code = updateRegionRequestDto.Code,
-                Name = updateRegionRequestDto.Name,
-                RegionImageUrl = updateRegionRequestDto.RegionImageUrl
-            };
+            var regionDomainModel = mapper.Map<Region>(updateRegionRequestDto);
             regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
             if(regionDomainModel == null)
             {
                 return NotFound();
             };
-            
+
             //Convert Domain model to Dto
-            var regionDto = new RegionDto
-            {
-                Id = regionDomainModel.Id,
-                Code = regionDomainModel.Code,
-                Name = regionDomainModel.Name,
-                RegionImageUrl = regionDomainModel.RegionImageUrl
-            };
-            return Ok(regionDto);
+            return Ok(mapper.Map<RegionDto>(regionDomainModel));
         }
 
 
@@ -139,16 +101,8 @@ namespace NEZWalksAPI.Controllers
                 return NotFound();
             }
             //Optional: return deleted region me mapping
-            //Permes dto
-            var regionDto = new RegionDto
-            {
-                Id = regionDomainModel.Id,
-                Code = regionDomainModel.Code,
-                Name = regionDomainModel.Name,
-                RegionImageUrl = regionDomainModel.RegionImageUrl
-            };
-
-            return Ok(regionDto);
+            //
+            return Ok(mapper.Map<RegionDto>(regionDomainModel));
         }
     }
 }
