@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using NEZWalksAPI.Data;
 using NEZWalksAPI.Models.Domain;
 
@@ -18,6 +19,17 @@ namespace NEZWalksAPI.Repositories
             await dbContext.Walk.AddAsync(walk);
             await dbContext.SaveChangesAsync();
             return walk;
+
+        }
+
+        public async Task<Walk?> DeleteAsync(Guid id)
+        {
+            var existingWalk = await dbContext.Walk.FirstAsync(x => x.Id == id);
+            if (existingWalk == null) { return null; }
+
+            dbContext.Walk.Remove(existingWalk);
+            await dbContext.SaveChangesAsync();
+            return existingWalk;
 
         }
 
@@ -49,5 +61,6 @@ namespace NEZWalksAPI.Repositories
             return existingWalk;
 
         }
+
     }
 }
