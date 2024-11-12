@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NEZWalksAPI.CustomActionsFilters;
 using NEZWalksAPI.Data;
 using NEZWalksAPI.Models.Domain;
 using NEZWalksAPI.Models.DTO;
 using NEZWalksAPI.Repositories;
+using NEZWalksAPI.CustomActionsFilters;
 
 namespace NEZWalksAPI.Controllers
 {
@@ -56,10 +58,10 @@ namespace NEZWalksAPI.Controllers
 
         //POST To create new Region 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
-            if (ModelState.IsValid)
-            {
+            
                 //Map DTO to Domain Model
                 var regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
                 //Use domain model to create region
@@ -69,39 +71,30 @@ namespace NEZWalksAPI.Controllers
                 var regionDto = mapper.Map<RegionDto>(regionDomainModel);
 
                 return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
-            }
-            else
-            {
-                return BadRequest();
-            }
-            
+             
 
         }
 
         //Update region
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
 
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                //Map DTO to domain model
-                var regionDomainModel = mapper.Map<Region>(updateRegionRequestDto);
-                regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
-                if (regionDomainModel == null)
-                {
-                    return NotFound();
-                };
 
-                //Convert Domain model to Dto
-                return Ok(mapper.Map<RegionDto>(regionDomainModel));
-            }
-            else
+            //Map DTO to domain model
+            var regionDomainModel = mapper.Map<Region>(updateRegionRequestDto);
+            regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
+            if (regionDomainModel == null)
             {
-                return BadRequest();
-            }
-            
+                return NotFound();
+            };
+
+            //Convert Domain model to Dto
+            return Ok(mapper.Map<RegionDto>(regionDomainModel));
+
+
         }
 
 
