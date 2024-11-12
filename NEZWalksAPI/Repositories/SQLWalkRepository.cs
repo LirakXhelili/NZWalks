@@ -25,5 +25,10 @@ namespace NEZWalksAPI.Repositories
             return await dbContext.Walk.Include("Difficulty").Include("Region").ToListAsync();
 
         }
+
+        public async Task<Walk> GetByIdAsync(Guid Id)
+        {
+           return await dbContext.Walk.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x=>x.Id == Id);        
+        }
     }
 }
