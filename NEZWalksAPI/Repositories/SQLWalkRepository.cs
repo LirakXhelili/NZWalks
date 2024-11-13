@@ -32,7 +32,8 @@ namespace NEZWalksAPI.Repositories
 
         }
 
-        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true)
+
+        public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
         {
             var walks = dbContext.Walk.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -46,7 +47,7 @@ namespace NEZWalksAPI.Repositories
 
             }
             //Sorting
-            if(string.IsNullOrWhiteSpace(sortBy) == false)
+            if (string.IsNullOrWhiteSpace(sortBy) == false)
             {
                 if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
@@ -54,13 +55,20 @@ namespace NEZWalksAPI.Repositories
                 }
                 else if (sortBy.Equals("LengthInKm", StringComparison.OrdinalIgnoreCase))
                 {
-                    walks = isAscending ? walks.OrderBy(x => x.LengthInKm) : walks.OrderByDescending(x => x.LengthInKm);                }
+                    walks = isAscending ? walks.OrderBy(x => x.LengthInKm) : walks.OrderByDescending(x => x.LengthInKm);
+                }
             }
 
-            return await walks.ToListAsync();
+            //Pagination
+            var skipResult = (pageNumber - 1) * pageSize;
+
+            return await walks.Skip(skipResult).Take(pageSize).ToListAsync();
             //return await dbContext.Walk.Include("Difficulty").Include("Region").ToListAsync();
+        }
 
-
+        public Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool? isAscending = null, int pageNumber = 1, int pageSize = 1000)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Walk> GetByIdAsync(Guid Id)
@@ -86,5 +94,6 @@ namespace NEZWalksAPI.Repositories
 
         }
 
+        
     }
 }
