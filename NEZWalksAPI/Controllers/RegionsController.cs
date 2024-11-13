@@ -8,12 +8,14 @@ using NEZWalksAPI.Models.Domain;
 using NEZWalksAPI.Models.DTO;
 using NEZWalksAPI.Repositories;
 using NEZWalksAPI.CustomActionsFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NEZWalksAPI.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
