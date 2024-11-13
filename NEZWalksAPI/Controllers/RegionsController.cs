@@ -60,7 +60,7 @@ namespace NEZWalksAPI.Controllers
             return Ok(mapper.Map<RegionDto>(regionDomain));
         }
 
-        //POST To create new Region 
+        //POST To create new Region.
         [HttpPost]
         [ValidateModel]
         [Authorize(Roles = "Writer")]
