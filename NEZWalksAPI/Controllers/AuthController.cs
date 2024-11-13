@@ -44,5 +44,26 @@ namespace NEZWalksAPI.Controllers
             }
             return BadRequest("Something went wrong");
         }
+
+        //LOGIN 
+        //POST: /api/Auth/Login
+        [HttpPost]
+        [Route("Login")]
+
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        {
+            var user = await userManager.FindByEmailAsync(loginRequestDto.Username);
+            if (user != null)
+            {
+                var checkPasswordResult = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+
+                if (checkPasswordResult)
+                {
+                    //Create token
+                    return Ok();
+                }
+            }
+            return BadRequest("Username or password incorrect!!");
+        }
     }
 }
