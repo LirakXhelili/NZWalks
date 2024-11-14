@@ -15,6 +15,7 @@ namespace NEZWalksAPI.Data
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Region> Regions{ get; set; }
         public DbSet<Walk>Walk { get; set; }
+        public DbSet<Image>Images { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
