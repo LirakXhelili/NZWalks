@@ -9,6 +9,7 @@ using NEZWalksAPI.Models.DTO;
 using NEZWalksAPI.Repositories;
 using NEZWalksAPI.CustomActionsFilters;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace NEZWalksAPI.Controllers
 {
@@ -21,25 +22,45 @@ namespace NEZWalksAPI.Controllers
         private readonly NZWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalksDbContext dbContext,IRegionRepository regionRepository,IMapper mapper)
+        public RegionsController(NZWalksDbContext dbContext,
+            IRegionRepository regionRepository,
+            IMapper mapper,
+            ILogger<RegionsController> logger)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
         [HttpGet]
-        [Authorize(Roles ="Reader")]
+        //[Authorize(Roles ="Reader")]
         public async Task<IActionResult> GetAll()
         {
-            //Get Data from database - Domain models
+            try
+            {
+                throw new Exception("This is a custom exception");
 
-            var regionsDomain =await regionRepository.GetAllAsync();
+                //Get Data from database - Domain models
 
-            //Mpa Domain Models to 
-            //var regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
-            //Return DTO (never return Domain Models)
-            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+                var regionsDomain = await regionRepository.GetAllAsync();
+
+                //Mpa Domain Models to 
+                //var regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
+                //Return DTO (never return Domain Models)
+
+                logger.LogInformation($"Finished GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)}");
+                return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
+
+           
+            
         }
 
         [HttpGet]
