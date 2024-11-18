@@ -125,7 +125,6 @@ namespace NEZWalksAPI.Controllers
         }
 
 
-
         //Delete Region 
         [HttpDelete]
         [Route("{id:guid}")]
