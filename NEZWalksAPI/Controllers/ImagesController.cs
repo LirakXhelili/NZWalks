@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NEZWalksAPI.Models.Domain;
 using NEZWalksAPI.Models.DTO;
+using NEZWalksAPI.Repositories;
 
 namespace NEZWalksAPI.Controllers
 {
@@ -8,6 +10,12 @@ namespace NEZWalksAPI.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        private readonly IImageRepository imageRepository;
+
+        public ImagesController(IImageRepository imageRepository)
+        {
+            this.imageRepository = imageRepository;
+        }
         //POST: /api/Images/Upload
         [HttpPost]
         [Route("Upload")]
@@ -17,7 +25,22 @@ namespace NEZWalksAPI.Controllers
 
             if (ModelState.IsValid)
             {
+                //Convert DTO to Domain Model
+                var imageDomainModel = new Image
+                {
+                    File = request.File,
+                    FileExtention = Path.GetExtension(request.File.FileName),
+                    FileSizeInBytes = request.File.Length,
+                    FileName = request.FileName,
+                    FileDescription = request.FileDescription
+
+                };
+
+
                 //Use repository to upload image
+                await imageRepository.Upload(imageDomainModel);
+
+                return Ok(imageDomainModel);
             }
             return BadRequest(ModelState);
         }
