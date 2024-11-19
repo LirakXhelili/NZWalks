@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication;
 using Serilog;
+using NEZWalksAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -119,6 +120,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
