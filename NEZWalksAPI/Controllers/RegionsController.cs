@@ -40,7 +40,7 @@ namespace NEZWalksAPI.Controllers
         {
             try
             {
-                throw new Exception("This is a custom exception");
+                //throw new Exception("This is a custom exception");
 
                 //Get Data from database - Domain models
 
