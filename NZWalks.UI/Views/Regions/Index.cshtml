@@ -25,6 +25,10 @@
                     <td>@walk.Id</td>
                     <td>@walk.Code</td>
                     <td>@walk.Name</td>
+                    <td>
+                        <a asp-controller="Regions" asp-action="Edit" asp-route-id ="@walk.Id"
+                        class="btn btn-light">Edit</a>
+                    </td>
                 </tr>
             }
         </tbody>
